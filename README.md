@@ -135,12 +135,6 @@ cd standalone
 pyspark < query.py
 ```
 
-Alternatively, run the query directly e.g.:
-
-```bash
-pyspark < queries/mean_pages.py
-```
-
 To run using `spark-submit`, run:
 
 ```bash
