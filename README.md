@@ -33,7 +33,7 @@ For more info on the project see the
 
 ### Beware: epcc-sparkrods branch
 
-The `epcc-sparkrods` branch currently does not work for UCL systems. This is because the code was refactored so that `newsrods/sparkrods.py` no longer  constructs UCL-specific URLs by prefixing OIDS file entries with `http://arthur.rd.ucl.ac.uk/objects/`. It would be expected that infrastructure specific functions in `deploy/`, which construct the OIDS files do this. These functions need to be updated to support this.
+The `epcc-sparkrods` branch currently does not work for UCL systems. This is because the code was refactored so that `bluclobber/sparkrods.py` no longer  constructs UCL-specific URLs by prefixing OIDS file entries with `http://arthur.rd.ucl.ac.uk/objects/`. It would be expected that infrastructure specific functions in `deploy/`, which construct the OIDS files do this. These functions need to be updated to support this.
 
 ---
 
@@ -205,7 +205,6 @@ If you get:
 $ fab bash
 fab standalone.setup:query=queries/mean_pages.py,oids=$PWD/oids.txt standalone.test
 ...
-[localhost] local: pyspark < newsrods/local_runner.py
 /bin/sh: pyspark: command not found
 ...
 Aborting.
@@ -239,3 +238,127 @@ module named fabric.api
 #1743](https://github.com/fabric/fabric/issues/1743).
 
 ---
+
+## Urika users
+
+### Set up Python environment
+
+Create `py27` environment:
+
+```bash
+module load anaconda3/4.1.1
+conda create -n py27 python=2.7 anaconda
+
+Proceed ([y]/n)? y
+```
+
+Activate environment:
+
+```bash
+source activate py27
+```
+
+Show active environment:
+
+```bash
+conda env list
+```
+```
+# conda environments:
+#
+py27                  *  /home/users/michaelj/.conda/envs/py27
+root                     /opt/cray/anaconda3/4.1.1
+```
+
+Install dependencies:
+
+```bash
+cd cluster-code
+conda install -c anaconda --file requirements.txt
+```
+
+**Note**:  After creating the `py27` environment, for your subsequent Urika sessions you just need to type:
+
+```bash
+module load anaconda3/4.1.1
+source activate py27
+```
+
+### Mount data using SSHFS
+
+```bash
+mkdir blpaper
+sshfs -o intr,large_read,auto_cache,workaround=all -oPort=22222 <your-uun>@chss.datastore.ed.ac.uk:/chss/datastore/chss/groups/Digital-Cultural-Heritage dch
+```
+
+Create data directory on Lustre:
+
+```
+mkdir -P /mnt/lustre/<your-uun>/dch
+```
+
+Alternatively, use `<your-urika-username>` instead of `<your-uun>`.
+
+Copy data files into `lustre` file system:
+
+```
+cp ~/dch/BritishLibraryBooks/1510_1699/000000874_0_1-22pgs__570785_dat.zip /mnt/lustre/<your-uun>/
+cp ~/dch/BritishLibraryBooks/1510_1699/000001143_0_1-20pgs__560409_dat.zip /mnt/lustre/<your-uun>/
+```
+
+**Important note:**
+
+* Do **not** mount the DataStore directory directly onto Lustre. Urika compute nodes have no network access and so can't access DataStore via the mount. Also, for efficient processing, data movement needs to be minimised. Copy the data into Lustre as above.
+
+Set data file permissions:
+
+```bash
+chmod u+rx /mnt/lustre/<your-uun>/*.zip
+```
+
+### Update OIDS file
+
+Change oids.txt to be the path to your files e.g.:
+
+```
+/mnt/lustre/<your-uun>/000001143_0_1-20pgs__560409_dat.zip
+/mnt/lustre/<your-uun>/000000874_0_1-22pgs__570785_dat.zip
+```
+
+### Submit Spark job
+
+Create directory:
+
+```bash
+fab standalone.setup:query=queries/mean_pages.py,oids=$PWD/oids.urika2.txt
+cd standalone
+zip -r bluclobber.zip bluclobber/
+```
+
+Submit Spark job:
+
+```
+spark-submit --py-files bluclobber.zip query.py
+```
+
+### Check results
+
+```bash
+cat result.yml
+```
+
+You should see:
+
+```
+[2, 4372]
+```
+
+Results can be validated as for standalone use, by unZIPping the ZIP files then searching for `<String>` elements across all the XML documents in the `ALTO` subdirectory.
+
+### Running on complete data set
+
+Copy the complete data set to Lustre, by running in your home directory:
+
+```
+source deploy/bl_copy.sh ~/dch/BritishLibraryBooks/ /mnt/lustre/<your-uun>/dch/BritishLibraryBooks
+```
