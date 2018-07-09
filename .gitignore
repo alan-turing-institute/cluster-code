@@ -1,5 +1,4 @@
 *.pyc
 
 # fab auto-built directories
-local
 standalone
