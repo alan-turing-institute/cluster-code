@@ -1,9 +1,6 @@
 # Enabling Complex Analysis of Large Scale Digital Collections
 
-This repository contains code from the first phase of '[Enabling
-Complex Analysis of Large Scale Digital Collections](http://figshare.com/articles/Enabling_Complex_Analysis_of_Large_Scale_Digital_Collections/1319482)',
-a project funded by the [Jisc Research Data
-Spring](http://opensource.org/licenses/MIT).
+This repository contains code from the first phase of '[Enabling Complex Analysis of Large Scale Digital Collections](http://figshare.com/articles/Enabling_Complex_Analysis_of_Large_Scale_Digital_Collections/1319482)', a project funded by the [Jisc Research Data Spring](http://opensource.org/licenses/MIT).
 
 The core project team are:
 
@@ -13,19 +10,16 @@ The core project team are:
 * CI James Hetherington (UCL)
 * CI Martin Zaltz Austwick (UCL)
 
-Associated researchers (without who research questions none of this
-could have happened!) are:
+Associated researchers (without who research questions none of this could have happened!) are:
 
 * Oliver Duke-Williams (UCL)
 * Will Finley (Sheffield)
 * Helen O'Neill (UCL)
 * Anne Welsh (UCL)
 
-All code is available for use and reuse under a
-[MIT Licence](http://opensource.org/licenses/MIT)
+All code is available for use and reuse under a [MIT Licence](http://opensource.org/licenses/MIT)
 
-For more info on the project see the
-[UCL DH](http://blogs.ucl.ac.uk/dh/2015/05/07/bluclobber-or-enabling-complex-analysis-of-large-scale-digital-collections/) and [British Library Digital Scholarship](http://britishlibrary.typepad.co.uk/digital-scholarship/) blogs.
+For more info on the project see the [UCL DH](http://blogs.ucl.ac.uk/dh/2015/05/07/bluclobber-or-enabling-complex-analysis-of-large-scale-digital-collections/) and [British Library Digital Scholarship](http://britishlibrary.typepad.co.uk/digital-scholarship/) blogs.
 
 ---
 
@@ -39,8 +33,7 @@ The `epcc-sparkrods` branch currently does not work for UCL systems. This is bec
 
 ## Standalone users
 
-If you don't have access to UCL's resources, you can run queries on
-your local machine.
+If you don't have access to UCL's resources, you can run queries on your local machine.
 
 ## Local machine requirements
 
@@ -75,7 +68,7 @@ nano anaconda2.sh
 
 Add content:
 
-```
+```bash
 export PATH=/home/centos/anaconda2/bin:$PATH
 ```
 
@@ -155,11 +148,7 @@ If using the sample data in `oids.txt`, you should see:
 [3, 504239]
 ```
 
-To check whether the results of `mean_pages.py` are correct, unzip the
-ZIP files specified in `oids.txt` within the same directory, such that
-all their XML documents end up within the same `ALTO` subdirectory,
-then, search for `<String>` elements across all the XML documents
-e.g.
+To check whether the results of `mean_pages.py` are correct, unzip the ZIP files specified in `oids.txt` within the same directory, such that all their XML documents end up within the same `ALTO` subdirectory, then, search for `<String>` elements across all the XML documents e.g.
 
 ```bash
 grep \<String ALTO/*.xml | wc -l
@@ -199,10 +188,9 @@ pytest
 
 ### Troubleshooting: `pyspark: command not found`
 
-If you get:
+If when running `fab standalone` you get:
 
-```
-$ fab bash
+```bash
 fab standalone.setup:query=queries/mean_pages.py,oids=$PWD/oids.txt standalone.test
 ...
 /bin/sh: pyspark: command not found
@@ -212,7 +200,7 @@ Aborting.
 
 Then add Apache Spark to your `PATH`:
 
-```
+```bash
 export PATH=~/spark-2.3.0-bin-hadoop2.7/bin:$PATH
 ```
 
@@ -220,22 +208,17 @@ export PATH=~/spark-2.3.0-bin-hadoop2.7/bin:$PATH
 
 If, when running `fab` you see:
 
-```
+```bash
 ImportError: No module named api
 ```
 
 Then check your version of `Fabric` e.g.
 
-```
+```bash
 pip freeze | grep Fabric
 ```
 
-It should be 1.x e.g. 1.14.0 and not 2.x. Fabric changed between
-version 1 and 2. See
-
-See [fabric](https://github.com/fabric/fabric/issues/1743) issue [no
-module named fabric.api
-#1743](https://github.com/fabric/fabric/issues/1743).
+It should be 1.x e.g. 1.14.0 and not 2.x. Fabric changed between version 1 and 2. See [fabric](https://github.com/fabric/fabric/issues/1743) issue [no module named fabric.api#1743](https://github.com/fabric/fabric/issues/1743).
 
 ---
 
@@ -266,7 +249,7 @@ conda env list
 ```
 # conda environments:
 #
-py27                  *  /home/users/michaelj/.conda/envs/py27
+py27                  *  /home/users/<your-urika-uun>/.conda/envs/py27
 root                     /opt/cray/anaconda3/4.1.1
 ```
 
@@ -288,7 +271,7 @@ source activate py27
 
 ```bash
 mkdir blpaper
-sshfs -o intr,large_read,auto_cache,workaround=all -oPort=22222 <your-uun>@chss.datastore.ed.ac.uk:/chss/datastore/chss/groups/Digital-Cultural-Heritage dch
+sshfs -o intr,large_read,auto_cache,workaround=all -oPort=22222 <your-uun>@chss.datastore.ed.ac.uk:<path-in-uoe-datastore> dch
 ```
 
 Create data directory on Lustre:
