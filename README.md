@@ -106,19 +106,19 @@ export PATH=~/spark-2.3.0-bin-hadoop2.7/bin:$PATH
 To run standalone, run:
 
 ```bash
-fab standalone.setup:query=queries/mean_pages.py,oids=$PWD/oids.txt standalone.test
+fab standalone.setup:query=queries/total_words.py,oids=$PWD/oids.txt standalone.test
 ```
 
 `fab` sets up a `standalone` directory with the following format:
 
 * `bluclobber`: a copy of `bluclobber`.
-* `query.py`: a copy of the `query` e.g. `queries/mean_pages.py`.
+* `query.py`: a copy of the `query` e.g. `queries/total_words.py`.
 * `oids.txt`: a copy of `oids.txt`.
 
 To only set up the `standalone` directory, run:
 
 ```bash
-fab standalone.setup:query=queries/mean_pages.py,oids=$PWD/oids.txt
+fab standalone.setup:query=queries/total_words.py,oids=$PWD/oids.txt
 ```
 
 To run using `pyspark`, run:
@@ -148,20 +148,20 @@ If using the sample data in `oids.txt`, you should see:
 [3, 504239]
 ```
 
-To check whether the results of `mean_pages.py` are correct, unzip the ZIP files specified in `oids.txt` within the same directory, such that all their XML documents end up within the same `ALTO` subdirectory, then, search for `<String>` elements across all the XML documents e.g.
+To check whether the results of `total_words.py` are correct, unzip the ZIP files specified in `oids.txt` within the same directory, such that all their XML documents end up within the same `ALTO` subdirectory, then, search for `<String>` elements across all the XML documents e.g.
 
 ```bash
 grep \<String ALTO/*.xml | wc -l
 ```
 
-The total should match that returned by `mean_pages.py` e.g. 504239.
+The total should match that returned by `total_words.py` e.g. 504239.
 
 ### Running unit tests
 
 To run unit tests using `fab`, run:
 
 ```bash
-fab standalone.setup:query=queries/mean_pages.py,oids=$PWD/oids.txt standalone.pytest
+fab standalone.setup:query=queries/total_words.py,oids=$PWD/oids.txt standalone.pytest
 ```
 
 You should see:
@@ -191,7 +191,7 @@ pytest
 If when running `fab standalone` you get:
 
 ```bash
-fab standalone.setup:query=queries/mean_pages.py,oids=$PWD/oids.txt standalone.test
+fab standalone.setup:query=queries/total_words.py,oids=$PWD/oids.txt standalone.test
 ...
 /bin/sh: pyspark: command not found
 ...
@@ -271,22 +271,20 @@ source activate py27
 
 ```bash
 mkdir blpaper
-sshfs -o intr,large_read,auto_cache,workaround=all -oPort=22222 <your-uun>@chss.datastore.ed.ac.uk:<path-in-uoe-datastore> dch
+sshfs -o intr,large_read,auto_cache,workaround=all -oPort=22222 <your-urika-username>@chss.datastore.ed.ac.uk:<path-in-uoe-datastore> dch
 ```
 
 Create data directory on Lustre:
 
-```
-mkdir -P /mnt/lustre/<your-uun>/dch
+```bash
+mkdir -p /mnt/lustre/<your-urika-username>/dchsubset/1510_1699
 ```
 
-Alternatively, use `<your-urika-username>` instead of `<your-uun>`.
+Copy data files into Lustre:
 
-Copy data files into `lustre` file system:
-
-```
-cp ~/dch/BritishLibraryBooks/1510_1699/000000874_0_1-22pgs__570785_dat.zip /mnt/lustre/<your-uun>/
-cp ~/dch/BritishLibraryBooks/1510_1699/000001143_0_1-20pgs__560409_dat.zip /mnt/lustre/<your-uun>/
+```bash
+cp ~/dch/BritishLibraryBooks/1510_1699/000000874_0_1-22pgs__570785_dat.zip /mnt/lustre/<your-urika-username>/dchsubset/1510_1699/
+cp ~/dch/BritishLibraryBooks/1510_1699/000001143_0_1-20pgs__560409_dat.zip /mnt/lustre/<your-urika-username>/dchsubset/1510_1699
 ```
 
 **Important note:**
@@ -296,16 +294,28 @@ cp ~/dch/BritishLibraryBooks/1510_1699/000001143_0_1-20pgs__560409_dat.zip /mnt/
 Set data file permissions:
 
 ```bash
-chmod u+rx /mnt/lustre/<your-uun>/*.zip
+chmod u+rx /mnt/lustre/<your-urika-username>/dchsubset/1510_1699/*.zip
 ```
 
 ### Update OIDS file
 
-Change oids.txt to be the path to your files e.g.:
+Change `oids.txt` to be the path to your files e.g.:
+
+```bash
+find /mnt/lustre/<your-urika-username>/dchsubset/ -name "*.zip" > oids.subset.txt
+```
+
+Check:
+
+```bash
+cat oids.subset.txt
+```
+
+You should see:
 
 ```
-/mnt/lustre/<your-uun>/000001143_0_1-20pgs__560409_dat.zip
-/mnt/lustre/<your-uun>/000000874_0_1-22pgs__570785_dat.zip
+/mnt/lustre/dchsubset/<your-urika-username>/000001143_0_1-20pgs__560409_dat.zip
+/mnt/lustre/dchsubset/<your-urika-username>/000000874_0_1-22pgs__570785_dat.zip
 ```
 
 ### Submit Spark job
@@ -313,14 +323,14 @@ Change oids.txt to be the path to your files e.g.:
 Create directory:
 
 ```bash
-fab standalone.setup:query=queries/mean_pages.py,oids=$PWD/oids.urika2.txt
+fab standalone.setup:query=queries/total_words.py,oids=$PWD/oids.subset.txt
 cd standalone
 zip -r bluclobber.zip bluclobber/
 ```
 
 Submit Spark job:
 
-```
+```bash
 spark-submit --py-files bluclobber.zip query.py
 ```
 
@@ -332,16 +342,38 @@ cat result.yml
 
 You should see:
 
-```
+```bash
 [2, 4372]
 ```
 
 Results can be validated as for standalone use, by unZIPping the ZIP files then searching for `<String>` elements across all the XML documents in the `ALTO` subdirectory.
 
-### Running on complete data set
+### Running on larger data sets
 
 Copy the complete data set to Lustre, by running in your home directory:
 
+```bash
+source deploy/bl_copy.sh ~/dch/BritishLibraryBooks/ /mnt/lustre/<your-urika-username>/dch/BritishLibraryBooks
 ```
-source deploy/bl_copy.sh ~/dch/BritishLibraryBooks/ /mnt/lustre/<your-uun>/dch/BritishLibraryBooks
+
+To create an OIDS file to query all books in `1510_1699/`:
+
+```bash
+find /mnt/lustre/<your-urika-username>/dch/BritishLibraryBooks/1510_1699/ -name "*.zip" > oids.1510-1699.txt
+```
+
+Run:
+
+```bash
+fab standalone.setup:query=queries/total_words.py,oids=$PWD/oids.1510-1699.txt
+cd standalone
+zip -r bluclobber.zip bluclobber/
+spark-submit --py-files bluclobber.zip query.py
+cat result.yml
+```
+
+You should get the result `[books, words]` with value:
+
+```bash
+[693, 17479341]
 ```

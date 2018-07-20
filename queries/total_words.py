@@ -1,4 +1,6 @@
-# An example analysis, for determining average pages per book
+# An example analysis, for determining
+# total number of works across all books.
+# Calculates [#books, #words].
 
 from bluclobber.archive import Archive
 from bluclobber.sparkrods import get_streams
