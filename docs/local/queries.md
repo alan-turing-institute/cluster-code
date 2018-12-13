@@ -109,8 +109,6 @@ It should be 1.x e.g. 1.14.0 and not 2.x. Fabric changed between version 1 and 2
 If when running `fab standalone` you get:
 
 ```bash
-fab standalone.setup:query=queries/total_words.py,oids=$PWD/oids.txt standalone.test
-...
 /bin/sh: pyspark: command not found
 ...
 Aborting.
