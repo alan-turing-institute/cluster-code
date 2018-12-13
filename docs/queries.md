@@ -37,7 +37,7 @@ nohup spark-submit --py-files bluclobber.zip query.py 144 > output_submission &
 Expected results, `[number_of_books, number_of_words]`:
 
 * Query over `1510_1699/000001143_0_1-20pgs__560409_dat.zip` and `1510_1699/000000874_0_1-22pgs__570785_dat.zip` only: `[2, 4372]`
-* Query over `1510_1699/` only: `[693, 17479341]` TODO
+* Query over `1510_1699/` only: `[693, 17479341]`
 
 The number of books should be equal to the number of ZIP files over which the query was run.
 
