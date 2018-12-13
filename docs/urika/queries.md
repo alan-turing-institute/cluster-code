@@ -143,7 +143,7 @@ python bluclobber/tools/join_lists.py production/bluclobber/harness/output_total
 
 Expected results, `[number_of_books, number_of_words]`:
 
-* Query over `1510_1699/` only: [693, 17479341]
+* Query over `1510_1699/` only: `[693, 17479341]`
 * Query over all books: `[63701, 6866559285]`
 
 ### Normaliser
