@@ -73,3 +73,9 @@ source deploy/bl_copy.sh ~/dch/BritishLibraryBooks/ /mnt/lustre/<your-urika-user
 **Important note:**
 
 * Do **not** mount the DataStore directory directly onto Lustre. Urika compute nodes have no network access and so can't access DataStore via the mount. Also, for efficient processing, data movement needs to be minimised. Copy the data into Lustre as above.
+
+Set data file permissions:
+
+```bash
+chmod -R u+rx /mnt/lustre/<your-urika-username>/dch/*/*.zip
+```
