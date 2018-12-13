@@ -1,10 +1,12 @@
-import pyspark
+from pyspark import SparkContext, SparkConf  # pylint: disable=import-error
 import requests
 
-def get_streams(downsample=1, source="oids.txt", app="Books"):
+def get_streams(downsample=1, source="oids.txt", app="Books", num_cores=1):
 
-
-    sc = pyspark.SparkContext(appName=app)
+    conf = SparkConf()
+    conf.setAppName(app)
+    conf.set("spark.cores.max", num_cores)
+    context = SparkContext(conf=conf)
 
     oids = map(lambda x: x.strip(), list(open('oids.txt')))
 
@@ -12,7 +14,7 @@ def get_streams(downsample=1, source="oids.txt", app="Books"):
         (oids[0].lower().startswith("http://") or \
          oids[0].lower().startswith("https://"))
 
-    rddoids = sc.parallelize(oids)
+    rddoids = context.parallelize(oids, num_cores)
 #    down = rddoids.sample(False, 1.0 / downsample )
     down = rddoids
     if (are_urls):

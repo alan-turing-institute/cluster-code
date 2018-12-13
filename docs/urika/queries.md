@@ -56,8 +56,13 @@ zip -r bluclobber.zip bluclobber/
 Submit job to Spark:
 
 ```bash
-spark-submit --py-files bluclobber.zip query.py
+nohup spark-submit --py-files bluclobber.zip query.py 144 > output_submission &
 ```
+
+`144` is the number of cores requested for the job. This, with the number of cores per
+node, determines the number of workers/executors and nodes. For Urika, which has 36 cores per node, this would request 144/36 = 4 workers/executors and nodes.
+
+**Note:** This is required as `spark-runner --total-executor-cores` seems to be ignored.
 
 Check results:
 

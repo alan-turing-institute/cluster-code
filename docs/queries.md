@@ -11,7 +11,7 @@ Run:
 fab standalone.setup:query=queries/total_books.py,oids=$PWD/oids.txt
 cd standalone
 zip -r bluclobber.zip bluclobber/
-spark-submit --py-files bluclobber.zip query.py
+nohup spark-submit --py-files bluclobber.zip query.py 144 > output_submission &
 ```
 
 Expected results, `number_of_books`:
@@ -31,7 +31,7 @@ Run:
 fab standalone.setup:query=queries/total_words.py,oids=$PWD/oids.txt
 cd standalone
 zip -r bluclobber.zip bluclobber/
-spark-submit --py-files bluclobber.zip query.py
+nohup spark-submit --py-files bluclobber.zip query.py 144 > output_submission &
 ```
 
 Expected results, `[number_of_books, number_of_words]`:
