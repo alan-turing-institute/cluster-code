@@ -54,8 +54,8 @@ module load mrun
 ## Mount data using SSHFS
 
 ```bash
-mkdir blpaper
-sshfs -o intr,large_read,auto_cache,workaround=all -oPort=22222 <your-urika-username>@chss.datastore.ed.ac.uk:<path-in-uoe-datastore> dch
+mkdir dch
+sshfs -o intr,large_read,auto_cache,workaround=all -oPort=22222 <username>@chss.datastore.ed.ac.uk:<path-in-uoe-datastore> dch
 ```
 
 Create data directory on Lustre file system:
