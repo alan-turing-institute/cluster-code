@@ -102,7 +102,7 @@ python bluclobber/tools/join_values.py production/bluclobber/harness/output_tota
 Expected results, `number_of_books`:
 
 * Query over `1510_1699/` only: `693`
-* Query over all books: `163701`
+* Query over all books: `63701`
 
 ### Total pages
 
