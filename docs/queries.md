@@ -54,3 +54,13 @@ grep \<String ALTO/*xml|wc -l
 ```
 4372
 ```
+
+---
+
+## Check the number of executors used
+
+A quick-and-dirty way to get this number is to run:
+
+```bash
+grep Exec output_submission | wc -l
+```
