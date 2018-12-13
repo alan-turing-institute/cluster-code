@@ -46,7 +46,7 @@ source activate py27
 ## Mount data using SSHFS
 
 ```bash
-mkdir blpaper
+mkdir dch
 sshfs -o intr,large_read,auto_cache,workaround=all -oPort=22222 <your-urika-username>@chss.datastore.ed.ac.uk:<path-in-uoe-datastore> dch
 ```
 
@@ -59,7 +59,7 @@ mkdir -p /mnt/lustre/<your-urika-username>/dch
 Copy the complete data set to Lustre, by running in your home directory:
 
 ```bash
-source deploy/bl_copy.sh ~/dch/BritishLibraryBooks/ /mnt/lustre/<your-urika-username>/dch/BritishLibraryBooks
+source deploy/bl_copy.sh ~/dch/BritishLibraryBooks/ /mnt/lustre/<username>/dch/BritishLibraryBooks
 ```
 
 **Important note:**

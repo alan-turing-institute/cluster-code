@@ -63,10 +63,3 @@ tar -xf spark-2.3.0-bin-hadoop2.7.tgz
 cd spark-2.3.0-bin-hadoop2.7/
 export PATH=~/spark-2.3.0-bin-hadoop2.7/bin:$PATH
 ```
-
-## Mount data using SSHFS
-
-```bash
-mkdir blpaper
-sshfs -o intr,large_read,auto_cache,workaround=all -oPort=22222 <your-urika-username>@chss.datastore.ed.ac.uk:<path-in-uoe-datastore> dch
-```
