@@ -1,4 +1,4 @@
-# Run queries standalone
+# Run queries locally
 
 ## Specify data files to query
 

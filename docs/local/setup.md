@@ -1,6 +1,6 @@
-# Set up standalone environment
+# Set up local environment
 
-## Local machine requirements
+## Requirements
 
 * Apache Spark
   - https://spark.apache.org

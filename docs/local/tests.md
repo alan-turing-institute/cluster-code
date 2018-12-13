@@ -1,4 +1,4 @@
-# Run tests standalone
+# Run tests locally
 
 To run unit tests using `fab`, run:
 

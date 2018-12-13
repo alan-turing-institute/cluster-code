@@ -39,11 +39,19 @@ This work was funded by Scottish Enterprise as part of the Alan Turing Institute
 
 ### Use
 
-* [Set up standalone environment](./docs/standalone/setup.md)
-* [Run queries standalone](./docs/standalone/queries.md)
+Using a local machine:
+
+* [Set up a local environment](./docs/local/setup.md)
+* [Run queries locally](./docs/local/queries.md)
+* [Run tests locally](./docs/local/tests.md)
+
+Using Urika:
 
 * [Set up Urika environment](./docs/urika/setup.md)
 * [Run queries on Urika](./docs/urika/queries.md)
+* [Run tests on Urika](./docs/urika/tests.md)
+
+Both:
 
 * [Available queries](./docs/queries.md)
 
