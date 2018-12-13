@@ -18,6 +18,7 @@ Expected results, `number_of_books`:
 
 * Query over `1510_1699/000001143_0_1-20pgs__560409_dat.zip` and `1510_1699/000000874_0_1-22pgs__570785_dat.zip` only: 2
 * Query over `1510_1699/` only: `693`
+* Query over all books: `63701`
 
 The number of books should be equal to the number of ZIP files over which the query was run.
 
@@ -38,6 +39,7 @@ Expected results, `[number_of_books, number_of_words]`:
 
 * Query over `1510_1699/000001143_0_1-20pgs__560409_dat.zip` and `1510_1699/000000874_0_1-22pgs__570785_dat.zip` only: `[2, 4372]`
 * Query over `1510_1699/` only: `[693, 17479341]`
+* Query over all books: `[63701, 6866559285]`
 
 The number of books should be equal to the number of ZIP files over which the query was run.
 
