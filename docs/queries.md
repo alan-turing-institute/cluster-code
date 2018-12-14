@@ -208,3 +208,17 @@ Then add Apache Spark to your `PATH`:
 ```bash
 export PATH=~/spark-2.3.0-bin-hadoop2.7/bin:$PATH
 ```
+
+---
+
+## Troubleshooting: `No such file or directory: ''`
+
+If you get:
+
+```
+File "/home/users/michaelj/cluster-code/standalone/bluclobber/sparkrods.py", line 25, in <lambda>
+  streams = down.map(lambda x: open(x))
+IOError: [Errno 2] No such file or directory: ''
+```
+
+then check for blank lines in `oids.txt` and, if there are any, then remove them.
