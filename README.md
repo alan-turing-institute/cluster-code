@@ -39,21 +39,10 @@ This work was funded by Scottish Enterprise as part of the Alan Turing Institute
 
 ### Use
 
-Using a local machine:
-
-* [Set up a local environment](./docs/local/setup.md)
-* [Run queries locally](./docs/local/queries.md)
-* [Run tests locally](./docs/local/tests.md)
-
-Using Urika:
-
-* [Set up Urika environment](./docs/urika/setup.md)
-* [Run queries on Urika](./docs/urika/queries.md)
-* [Run tests on Urika](./docs/urika/tests.md)
-
-Both:
-
-* [Available queries](./docs/queries.md)
+* [Set up a local environment](./docs/setup-local.md)
+* [Set up Urika environment](./docs/setup-urika.md)
+* [Run queries](./docs/queries.md)
+* [Run tests](./docs/tests.md)
 
 **Note:** the `epcc-sparkrods` branch currently will not work on UCL systems. This is because the code was refactored so that `bluclobber/sparkrods.py` no longer constructs UCL-specific URLs by prefixing OIDS file entries with `http://arthur.rd.ucl.ac.uk/objects/`. It would be expected that infrastructure specific functions in `deploy/`, which construct the OIDS files do this. These functions need to be updated to support this.
 
