@@ -8,15 +8,15 @@ from fabric.api import task, env, execute, lcd, local
 
 
 @task
-def setup(query, oids):
+def setup(query, filenames):
     '''
     Prepare instance for running. Generates necessary files.
     '''
-    execute(install, query=query, oids=oids)
+    execute(install, query=query, filenames=filenames)
 
 
 @task
-def install(query, oids):
+def install(query, filenames):
     '''
     Generate necessary files.
     '''
@@ -25,7 +25,7 @@ def install(query, oids):
     with lcd(env.standalone_deploy_dir):  # pylint: disable=not-context-manager
         local('cp -r ../bluclobber .')
         local('cp ../' + query + ' ./query.py')
-        local('cp ' + oids + ' oids.txt')
+        local('cp ' + filenames + ' files.txt')
         local('find . -iname "*.pyc" -delete')
         local('find . -iname "__pycache__" -delete')
 

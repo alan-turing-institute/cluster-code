@@ -44,7 +44,7 @@ This work was funded by Scottish Enterprise as part of the Alan Turing Institute
 * [Run queries](./docs/queries.md)
 * [Run tests](./docs/tests.md)
 
-**Note:** the `epcc-sparkrods` branch currently will not work on UCL systems. This is because the code was refactored so that `bluclobber/sparkrods.py` no longer constructs UCL-specific URLs by prefixing OIDS file entries with `http://arthur.rd.ucl.ac.uk/objects/`. It would be expected that infrastructure specific functions in `deploy/`, which construct the OIDS files do this. These functions need to be updated to support this.
+**Note:** the `epcc-sparkrods` branch currently will not work on UCL systems. This is because the code was refactored so that `bluclobber/sparkrods.py` no longer constructs UCL-specific URLs by prefixing file names with `http://arthur.rd.ucl.ac.uk/objects/`. It would be expected that infrastructure specific functions in `deploy/`, which construct the file with filenames, default `files.txt`, will do this. These functions need to be updated to support this.
 
 ---
 

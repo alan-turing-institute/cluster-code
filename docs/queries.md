@@ -2,24 +2,24 @@
 
 ## Specify data files to query
 
-Populate `oids.txt` with the paths to the data files e.g.:
+Populate `files.txt` with the paths to the data files e.g.:
 
 * Local:
 
 ```bash
-find $HOME/dch -name "*.zip" > oids.txt
+find $HOME/dch -name "*.zip" > files.txt
 ```
 
 * Urika:
 
 ```bash
-find /mnt/lustre/<your-urika-username>/dch -name "*.zip" > oids.txt
+find /mnt/lustre/<your-urika-username>/dch -name "*.zip" > files.txt
 ```
 
 Check:
 
 ```bash
-cat oids.txt
+cat files.txt
 ```
 
 You should see the following:
@@ -51,13 +51,13 @@ Alternatively, you can run `find` over a subset of the paths:
 * Local:
 
 ```bash
-find $HOME/dch/BritishLibraryBooks/1510_1699/ -name "*.zip" > oids.txt
+find $HOME/dch/BritishLibraryBooks/1510_1699/ -name "*.zip" > files.txt
 ```
 
 * Urika:
 
 ```bash
-find /mnt/lustre/<your-urika-username>/dch/BritishLibraryBooks/1510_1699/ -name "*.zip" > oids.txt
+find /mnt/lustre/<your-urika-username>/dch/BritishLibraryBooks/1510_1699/ -name "*.zip" > files.txt
 ```
 
 ---
@@ -69,14 +69,14 @@ Queries are run as follows, where `<QUERY>` is the name of a query.
 Create job for Spark:
 
 ```bash
-fab standalone.setup:query=queries/<QUERY>.py,oids=$PWD/oids.txt
+fab standalone.setup:query=queries/<QUERY>.py,filenames=$PWD/files.txt
 ```
 
 `fab` sets up a `standalone` directory with the following format:
 
 * `bluclobber`: a copy of `bluclobber`.
 * `query.py`: a copy of the `query` i.e. `queries/<QUERY>.py`.
-* `oids.txt`: a copy of `oids.txt`.
+* `files.txt`: a copy of `files.txt`.
 
 Run using `pyspark` (local only):
 
@@ -116,7 +116,7 @@ lowing.
 Run:
 
 ```bash
-fab standalone.setup:query=queries/total_books.py,oids=$PWD/oids.txt
+fab standalone.setup:query=queries/total_books.py,filenames=$PWD/files.txt
 cd standalone
 zip -r bluclobber.zip bluclobber/
 nohup spark-submit --py-files bluclobber.zip query.py 144 > output_submission &
@@ -135,7 +135,7 @@ The number of books should be equal to the number of ZIP files over which the qu
 Run:
 
 ```bash
-fab standalone.setup:query=queries/total_words.py,oids=$PWD/oids.txt
+fab standalone.setup:query=queries/total_words.py,filenames=$PWD/files.txt
 cd standalone
 zip -r bluclobber.zip bluclobber/
 nohup spark-submit --py-files bluclobber.zip query.py 144 > output_submission &
@@ -221,4 +221,4 @@ File "/home/users/michaelj/cluster-code/standalone/bluclobber/sparkrods.py", lin
 IOError: [Errno 2] No such file or directory: ''
 ```
 
-then check for blank lines in `oids.txt` and, if there are any, then remove them.
+then check for blank lines in `files.txt` and, if there are any, then remove them.

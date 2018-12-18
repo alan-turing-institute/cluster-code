@@ -50,7 +50,7 @@ def sub(query, subsample=1, processes=12, wall='2:0:0'):
     with cd(env.run_at):
        put(query, 'query.py')
        put('query.sh','query.sh')
-       run('cp ../oids.txt .')
+       run('cp ../files.txt .')
        run('qsub query.sh')
 
 @task
@@ -63,7 +63,7 @@ def storeids():
            '"SELECT DATA_PATH where COLL_NAME like '+
            "'"+env.corpus+"%'"+
            " and DATA_NAME like '%-%.zip' "+
-           " and DATA_RESC_HIER = 'wos;wosArchive'"+'" >oids.txt')
+           " and DATA_RESC_HIER = 'wos;wosArchive'"+'" >files.txt')
 
 @task
 def stat():
