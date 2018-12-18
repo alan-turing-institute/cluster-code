@@ -44,7 +44,7 @@ You should see the following:
 
 ## Specify a subset of data files to query
 
-For experimentation, you may find it useful to run queries across a subset of the data. For examplnm you can hard-code the paths.
+For experimentation, you may find it useful to run queries across a subset of the data. For example, you can hard-code the paths.
 
 Alternatively, you can run `find` over a subset of the paths:
 
@@ -64,19 +64,20 @@ find /mnt/lustre/<your-urika-username>/dch/BritishLibraryBooks/1510_1699/ -name 
 
 ## Run queries (general form)
 
-Queries are run as follows, where `<QUERY>` is the name of a query.
+Queries are run as follows, where `<QUERY>` is the name of a query and `<DATA>` the name of a complementary query-specific data file.
 
 Create job for Spark:
 
 ```bash
-fab standalone.setup:query=queries/<QUERY>.py,filenames=$PWD/files.txt
+fab standalone.prepare:query=queries/<QUERY>.py[,datafile=query_args/<DATA>.txt][,filenames=<PATH_TO_FILENAMES_FILE>]
 ```
 
 `fab` sets up a `standalone` directory with the following format:
 
-* `bluclobber`: a copy of `bluclobber`.
-* `query.py`: a copy of the `query` i.e. `queries/<QUERY>.py`.
-* `files.txt`: a copy of `files.txt`.
+* `files.txt`: copy of <PATH_TO_FILENAMES_FILE>. Optional. Default: `files.txt`
+* `bluclobber`: copy of `bluclobber`
+* `query.py`: copy of `queries/<QUERY>.py`
+* `input.data`: copy of `<DATA>.txt`. Whether this is needed depends on what <<QUERY>.py` is being used.
 
 Run using `pyspark` (local only):
 
@@ -88,9 +89,15 @@ pyspark < query.py
 Run using `spark-submit`:
 
 ```bash
+fab standalone.submit:num_cores=144
+```
+
+Run using `spark-submit` (alternative):
+
+```bash
 cd standalone
-zip -r bluclobber.zip bluclobber/
-nohup spark-submit --py-files bluclobber.zip query.py 144 > output_submission &
+zip -r newsrods.zip newsrods/
+nohup spark-submit --py-files bluclobber.zip query.py 144 > log.txt &
 ```
 
 **Note:**
@@ -101,6 +108,7 @@ nohup spark-submit --py-files bluclobber.zip query.py 144 > output_submission &
 Check results:
 
 ```bash
+cd standalone
 cat result.yml 
 ```
 
@@ -108,18 +116,14 @@ cat result.yml
 
 ## Available queries
 
-The available queries, which can be substituted into `<QUERY>`, include the fol
-lowing.
+The available queries, which can be substituted into `<QUERY>`, include the following.
 
 ### Total books
 
 Run:
 
 ```bash
-fab standalone.setup:query=queries/total_books.py,filenames=$PWD/files.txt
-cd standalone
-zip -r bluclobber.zip bluclobber/
-nohup spark-submit --py-files bluclobber.zip query.py 144 > output_submission &
+fab standalone.prepare:query=queries/total_books.py,filenames=$PWD/files.txt standalone.submit:num_cores=144
 ```
 
 Expected results, `number_of_books`:
@@ -135,10 +139,7 @@ The number of books should be equal to the number of ZIP files over which the qu
 Run:
 
 ```bash
-fab standalone.setup:query=queries/total_words.py,filenames=$PWD/files.txt
-cd standalone
-zip -r bluclobber.zip bluclobber/
-nohup spark-submit --py-files bluclobber.zip query.py 144 > output_submission &
+fab standalone.prepare:query=queries/total_words.py,filenames=$PWD/files.txt standalone.submit:num_cores=144
 ```
 
 Expected results, `[number_of_books, number_of_words]`:
@@ -170,14 +171,14 @@ grep \<String ALTO/*xml|wc -l
 A quick-and-dirty way to get this number is to run:
 
 ```bash
-grep Exec output_submission | wc -l
+grep Exec log.txt | wc -l
 ```
 
 ---
 
 ## Troubleshooting: `ImportError: No module named api`
 
-If, when running `fab` you see:
+If running `fab` you see:
 
 ```bash
 ImportError: No module named api
@@ -195,7 +196,7 @@ It should be 1.x e.g. 1.14.0 and not 2.x. Fabric changed between version 1 and 2
 
 ## Troubleshooting: `pyspark: command not found`
 
-If when running `fab standalone` you get:
+If running `fab standalone` locally you get:
 
 ```bash
 /bin/sh: pyspark: command not found

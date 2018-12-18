@@ -1,48 +1,56 @@
-'''
-Set up to run standalone without use of IRODS.
-'''
+"""
+Set up and run standalone.
+"""
 
 import os
 import pandas as pd
 from fabric.api import task, env, execute, lcd, local
 
+DEPLOY_DIR = "standalone"
 
 @task
-def setup(query, filenames):
-    '''
-    Prepare instance for running. Generates necessary files.
-    '''
-    execute(install, query=query, filenames=filenames)
-
-
-@task
-def install(query, filenames):
-    '''
-    Generate necessary files.
-    '''
-    local('rm -rf ' + env.standalone_deploy_dir)
-    local('mkdir -p ' + env.standalone_deploy_dir)
-    with lcd(env.standalone_deploy_dir):  # pylint: disable=not-context-manager
+def setup():
+    """
+    Set up directory with Python files.
+    """
+    local('rm -rf ' + DEPLOY_DIR)
+    local('mkdir -p ' + DEPLOY_DIR)
+    with lcd(DEPLOY_DIR):  # pylint: disable=not-context-manager
         local('cp -r ../bluclobber .')
-        local('cp ../' + query + ' ./query.py')
-        local('cp ' + filenames + ' files.txt')
         local('find . -iname "*.pyc" -delete')
         local('find . -iname "__pycache__" -delete')
 
 
 @task
-def test():
-    '''
-    Run the query.
-    '''
-    with lcd(env.standalone_deploy_dir):  # pylint: disable=not-context-manager
-        local('pyspark < query.py')
+def prepare(filenames="../files.txt", query="", datafile=""):
+    """
+    Set up directory with Python files, file with list of
+    filenames, query file and datafile required by the
+    query file.
+    """
+    setup()
+    with lcd(DEPLOY_DIR):  # pylint: disable=not-context-manager
+        local('cp ' + filenames + ' files.txt')
+        local('cp ../' + query + ' query.py')
+        if (datafile != ""):
+            local('cp ../' + datafile + ' input.data')
+        local('zip -r ./bluclobber.zip bluclobber')
+
+
+@task
+def submit(num_cores=1):
+    """
+    Submit the query to Spark.
+    """
+    with lcd(DEPLOY_DIR):  # pylint: disable=not-context-manager
+        local('zip -r ./bluclobber.zip bluclobber')
+        local("nohup spark-submit --py-files bluclobber.zip query.py " + str(num_cores) + " > log.txt &")
 
 
 @task
 def pytest():
-    '''
-    Run pytest tests.
-    '''
-    with lcd(env.standalone_deploy_dir):  # pylint: disable=not-context-manager
+    """
+    Run tests using py.test.
+    """
+    with lcd(DEPLOY_DIR):  # pylint: disable=not-context-manager
         local('py.test')
