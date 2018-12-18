@@ -146,7 +146,7 @@ Expected results:
 
 * Query over `1510_1699/000001143_0_1-20pgs__560409_dat.zip` and `1510_1699/000000874_0_1-22pgs__570785_dat.zip` only: `{books: 2, pages: 42}`
 * Query over `1510_1699/` only:  `{books: 693, pages: 62768}`
-* Query over all books: `{books: 63701, pages: NNNNNNNN}`
+* Query over all books: `{books: 63701, pages: 22044324}`
 
 The number of books should be equal to the number of ZIP files over which the query was run.
 
