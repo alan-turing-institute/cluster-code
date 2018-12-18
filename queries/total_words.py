@@ -1,5 +1,9 @@
-# An example analysis, for determining total number of words
-# across all books.
+'''
+This module counts the total number of words across all books.
+'''
+
+from operator import add
+import re
 
 from bluclobber.archive import Archive
 from bluclobber.sparkrods import get_streams
@@ -7,16 +11,12 @@ from bluclobber.sparkrods import get_streams
 import yaml
 import sys
 
-num_cores = 1
-if len(sys.argv) > 1:
-    num_cores = sys.argv[1]
 
-streams = get_streams(downsample = 4096, num_cores = num_cores)
-issues = streams.map(Archive)
-books = issues.flatMap(lambda x: list(x))
-word_counts = books.map(lambda x: len(list(x.words())))
-
-result = [books.count(), word_counts.reduce(lambda x,y: x+y)]
-
-with open('result.yml','w') as result_file:
-    result_file.write(yaml.safe_dump(result))
+def do_query(archives, _, _log):
+    '''
+    Get total number of words across all books.
+    '''
+    books = archives.flatMap(lambda archive: list(archive))
+    word_counts = books.map(lambda book: len(list(book.words())))
+    result = [books.count(), word_counts.reduce(lambda x,y: x+y)]
+    return {"books": result[0], "words": result[1]}

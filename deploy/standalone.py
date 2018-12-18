@@ -31,7 +31,7 @@ def prepare(filenames="../files.txt", query="", datafile=""):
     setup()
     with lcd(DEPLOY_DIR):  # pylint: disable=not-context-manager
         local('cp ' + filenames + ' files.txt')
-        local('cp ../' + query + ' query.py')
+        local('cp ../' + query + ' ./bluclobber/query.py')
         if (datafile != ""):
             local('cp ../' + datafile + ' input.data')
         local('zip -r ./bluclobber.zip bluclobber')
@@ -44,7 +44,7 @@ def submit(num_cores=1):
     """
     with lcd(DEPLOY_DIR):  # pylint: disable=not-context-manager
         local('zip -r ./bluclobber.zip bluclobber')
-        local("nohup spark-submit --py-files bluclobber.zip query.py " + str(num_cores) + " > log.txt &")
+        local("nohup spark-submit --py-files bluclobber.zip bluclobber/standalone_runner.py " + str(num_cores) + " > log.txt &")
 
 
 @task

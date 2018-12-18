@@ -76,14 +76,14 @@ fab standalone.prepare:query=queries/<QUERY>.py[,datafile=query_args/<DATA>.txt]
 
 * `files.txt`: copy of <PATH_TO_FILENAMES_FILE>. Optional. Default: `files.txt`
 * `bluclobber`: copy of `bluclobber`
-* `query.py`: copy of `queries/<QUERY>.py`
+* `bluclobber/query.py`: copy of `queries/<QUERY>.py`
 * `input.data`: copy of `<DATA>.txt`. Whether this is needed depends on what <<QUERY>.py` is being used.
 
 Run using `pyspark` (local only):
 
 ```bash
 cd standalone
-pyspark < query.py
+pyspark < newsrods/standalone_runner.py
 ```
 
 Run using `spark-submit`:
@@ -97,7 +97,7 @@ Run using `spark-submit` (alternative):
 ```bash
 cd standalone
 zip -r newsrods.zip newsrods/
-nohup spark-submit --py-files bluclobber.zip query.py 144 > log.txt &
+nohup spark-submit --py-files bluclobber.zip bluclobber/standalone_runner.py 144 > log.txt &
 ```
 
 **Note:**
@@ -128,9 +128,9 @@ fab standalone.prepare:query=queries/total_books.py,filenames=$PWD/files.txt sta
 
 Expected results, `number_of_books`:
 
-* Query over `1510_1699/000001143_0_1-20pgs__560409_dat.zip` and `1510_1699/000000874_0_1-22pgs__570785_dat.zip` only: 2
-* Query over `1510_1699/` only: `693`
-* Query over all books: `63701`
+* Query over `1510_1699/000001143_0_1-20pgs__560409_dat.zip` and `1510_1699/000000874_0_1-22pgs__570785_dat.zip` only: `{books: 2}`
+* Query over `1510_1699/` only:  `{books: 693}`
+* Query over all books: `{books: 63701}`
 
 The number of books should be equal to the number of ZIP files over which the query was run.
 
@@ -144,9 +144,9 @@ fab standalone.prepare:query=queries/total_words.py,filenames=$PWD/files.txt sta
 
 Expected results, `[number_of_books, number_of_words]`:
 
-* Query over `1510_1699/000001143_0_1-20pgs__560409_dat.zip` and `1510_1699/000000874_0_1-22pgs__570785_dat.zip` only: `[2, 4372]`
-* Query over `1510_1699/` only: `[693, 17479341]`
-* Query over all books: `[63701, 6866559285]`
+* Query over `1510_1699/000001143_0_1-20pgs__560409_dat.zip` and `1510_1699/000000874_0_1-22pgs__570785_dat.zip` only: `{books: 2, words: 4372}`
+* Query over `1510_1699/` only: `{books: 693, words: 17479341}`
+* Query over all books: `{books: 63701, words: 6866559285}`
 
 The number of books should be equal to the number of ZIP files over which the query was run.
 
