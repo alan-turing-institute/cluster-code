@@ -1,2 +1,2 @@
-/mnt/lustre/michaelj/dch/BritishLibraryBooks/1510_1699/000001143_0_1-20pgs__560409_dat.zip
-/mnt/lustre/michaelj/dch/BritishLibraryBooks/1510_1699/000000874_0_1-22pgs__570785_dat.zip
+https://github.com/alan-turing-institute/cluster-code/raw/sparkrods/bluclobber/test/fixtures/zips/book37.zip
+https://github.com/alan-turing-institute/cluster-code/raw/sparkrods/bluclobber/test/fixtures/corpus24/000206133_0_1-1178pgs__1023547_dat.zip
