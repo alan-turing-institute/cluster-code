@@ -12,8 +12,8 @@ You should see:
 
 ```bash
 ============================= test session starts ==============================
-platform linux2 -- Python 2.7.14, pytest-3.3.2, py-1.5.2, pluggy-0.6.0
-rootdir: /home/centos/cluster-code, inifile:
+platform linux2 -- Python 2.7.13, pytest-3.7.1, py-1.5.4, pluggy-0.7.1
+rootdir: /home/users/<user>/cluster-code, inifile:
 collected 11 items                                                             
 
 bluclobber/test/test_archive.py ..                                       [ 18%]
@@ -37,7 +37,7 @@ You should see:
 ```
 ============================= test session starts =============================
 platform linux2 -- Python 2.7.13, pytest-3.7.1, py-1.5.4, pluggy-0.7.1
-rootdir: /home/users/michaelj/cluster-code, inifile:
+rootdir: /home/users/<user>/cluster-code, inifile:
 collected 11 items
 
 bluclobber/test/test_archive.py ..                                      [ 18%]

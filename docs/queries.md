@@ -13,7 +13,7 @@ find $HOME/dch -name "*.zip" > files.txt
 * Urika:
 
 ```bash
-find /mnt/lustre/<your-urika-username>/dch -name "*.zip" > files.txt
+find /mnt/lustre/<user>/dch -name "*.zip" > files.txt
 ```
 
 Check:
@@ -35,8 +35,8 @@ You should see the following:
 * Urika:
 
 ```
-/mnt/lustre/<your-urika-username>/dch/BritishLibraryBooks/1510_1699/000001143_0_1-20pgs__560409_dat.zip
-/mnt/lustre/<your-urika-username>/dch/BritishLibraryBooks/1510_1699/000000874_0_1-22pgs__570785_dat.zip
+/mnt/lustre/<user>/dch/BritishLibraryBooks/1510_1699/000001143_0_1-20pgs__560409_dat.zip
+/mnt/lustre/<user>/dch/BritishLibraryBooks/1510_1699/000000874_0_1-22pgs__570785_dat.zip
 ...
 ```
 
@@ -57,7 +57,7 @@ find $HOME/dch/BritishLibraryBooks/1510_1699/ -name "*.zip" > files.txt
 * Urika:
 
 ```bash
-find /mnt/lustre/<your-urika-username>/dch/BritishLibraryBooks/1510_1699/ -name "*.zip" > files.txt
+find /mnt/lustre/<user>/dch/BritishLibraryBooks/1510_1699/ -name "*.zip" > files.txt
 ```
 
 ---
@@ -126,13 +126,43 @@ Run:
 fab standalone.prepare:query=queries/total_books.py,filenames=$PWD/files.txt standalone.submit:num_cores=144
 ```
 
-Expected results, `number_of_books`:
+Expected results:
 
 * Query over `1510_1699/000001143_0_1-20pgs__560409_dat.zip` and `1510_1699/000000874_0_1-22pgs__570785_dat.zip` only: `{books: 2}`
 * Query over `1510_1699/` only:  `{books: 693}`
 * Query over all books: `{books: 63701}`
 
 The number of books should be equal to the number of ZIP files over which the query was run.
+
+### Total pages
+
+Run:
+
+```bash
+fab standalone.prepare:query=queries/total_pages.py,filenames=$PWD/files.txt standalone.submit:num_cores=144
+```
+
+Expected results:
+
+* Query over `1510_1699/000001143_0_1-20pgs__560409_dat.zip` and `1510_1699/000000874_0_1-22pgs__570785_dat.zip` only: `{books: 2, pages: 42}`
+* Query over `1510_1699/` only:  `{books: 693, pages: 62768}`
+* Query over all books: `{books: 63701, pages: NNNNNNNN}`
+
+The number of books should be equal to the number of ZIP files over which the query was run.
+
+The number of pages should be equal to the number of `<Page>` elements in each XML file in the `ALTO` subdirectories within each zip file. This can be validated as follows (for example)
+
+```bash
+mkdir tmp
+cp /mnt/lustre/<user>/dch/BritishLibraryBooks/1510_1699/000001143_0_1-20pgs__560409_dat.zip .
+cp /mnt/lustre/<user>/dch/BritishLibraryBooks/1510_1699/000000874_0_1-22pgs__570785_dat.zip .
+unzip 000000874_0_1-22pgs__570785_dat.zip
+unzip 000001143_0_1-20pgs__560409_dat.zip
+grep \<Page ALTO/*xml|wc -l
+```
+```
+42
+```
 
 ### Total words
 
@@ -142,7 +172,7 @@ Run:
 fab standalone.prepare:query=queries/total_words.py,filenames=$PWD/files.txt standalone.submit:num_cores=144
 ```
 
-Expected results, `[number_of_books, number_of_words]`:
+Expected results:
 
 * Query over `1510_1699/000001143_0_1-20pgs__560409_dat.zip` and `1510_1699/000000874_0_1-22pgs__570785_dat.zip` only: `{books: 2, words: 4372}`
 * Query over `1510_1699/` only: `{books: 693, words: 17479341}`
@@ -154,8 +184,8 @@ The number of words should be equal to the number of `<String>` elements in each
 
 ```bash
 mkdir tmp
-cp /mnt/lustre/<your-urika-username>/dch/BritishLibraryBooks/1510_1699/000001143_0_1-20pgs__560409_dat.zip .
-cp /mnt/lustre/<your-urika-username>/dch/BritishLibraryBooks/1510_1699/000000874_0_1-22pgs__570785_dat.zip .
+cp /mnt/lustre/<user>/dch/BritishLibraryBooks/1510_1699/000001143_0_1-20pgs__560409_dat.zip .
+cp /mnt/lustre/<user>/dch/BritishLibraryBooks/1510_1699/000000874_0_1-22pgs__570785_dat.zip .
 unzip 000000874_0_1-22pgs__570785_dat.zip
 unzip 000001143_0_1-20pgs__560409_dat.zip
 grep \<String ALTO/*xml|wc -l
@@ -217,7 +247,7 @@ export PATH=~/spark-2.3.0-bin-hadoop2.7/bin:$PATH
 If you get:
 
 ```
-File "/home/users/michaelj/cluster-code/standalone/bluclobber/sparkrods.py", line 25, in <lambda>
+File "/home/users/<user>/cluster-code/standalone/bluclobber/sparkrods.py", line 25, in <lambda>
   streams = down.map(lambda x: open(x))
 IOError: [Errno 2] No such file or directory: ''
 ```
