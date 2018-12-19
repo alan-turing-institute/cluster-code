@@ -1,6 +1,17 @@
 """
 Counts the number of occurrences of words per-year. The query expects
 a file with a list of the words to search for, one per line.
+
+The result is of form, for example:
+
+    YYYY:
+    - [WORD, N]
+    - [WORD, N]
+    - ...
+    YYYY:
+    ...
+
+Only words that occur one or more times are returned.
 """
 
 from operator import add
@@ -9,9 +20,14 @@ import re
 
 def do_query(archives, words_file, logger=None):
     """
-    Counts the number of occurrences of words per-year. The query
-    expects a file with a list of the words to search for, one per
-    line.
+    Counts the number of occurrences of words per-year.
+
+    @param archives: Archives holding Books
+    @type archives: pyspark.rdd.PipelinedRDD with Archives.
+    @param words_file: File with list of words to search for,
+    one per line
+    @type words_file: str or unicode
+    @param logger: Logger
     """
     with open(words_file, "r") as f:
         words = [re.compile(r'\b' + word.strip() + r'\b', re.I | re.U)
@@ -31,11 +47,12 @@ def do_query(archives, words_file, logger=None):
          for regex in words])
     # [((YEAR, WORD), MATCHES), ...]
 
-    num_matches = matches.map(
-        lambda (year_word, matches): (year_word, len(matches)))
+    num_matches = matches.mapValues(len)
     # [((YEAR, WORD), NNNN), ...]
 
-    # TODO Add a filter to strip 0 matches.
+    num_matches = num_matches.filter(
+        lambda (year_word, num_matches): num_matches > 0)
+    # [((YEAR, WORD), NNNN), ...]
 
     result = num_matches \
         .reduceByKey(add) \
