@@ -194,6 +194,61 @@ grep \<String ALTO/*xml|wc -l
 4372
 ```
 
+### Words grouped by year
+
+Run:
+
+```
+fab standalone.prepare:query=queries/find_words_group_by_year.py,datafile=query_args/<WORDS>.txt,filenames=~/samples/oids.2books.txt standalone.submit:num_cores=144
+```
+
+where `<WORDS>.txt` is a file with a list of words to search for, one per line. Words in the books are converted to lower-case and non 'a-z' characters (e.g. commas, hyphens etc.) removed.
+
+* Query over `1510_1699/000001143_0_1-20pgs__560409_dat.zip` and `1510_1699/000000874_0_1-22pgs__570785_dat.zip` with `query_args/hearts.txt`:
+
+```
+1676:
+- [hearts, 1]
+- [heart, 4]
+```
+
+### Words grouped by word
+
+Run:
+
+```
+fab standalone.prepare:query=queries/find_words_group_by_word.py,datafile=query_args/<WORDS>.txt,filenames=~/samples/oids.2books.txt standalone.submit:num_cores=144
+```
+
+where `<WORDS>.txt` is a file with a list of words to search for, one per line. Words in the books are converted to lower-case and non 'a-z' characters (e.g. commas, hyphens etc.) removed.
+
+* Query over `1510_1699/000001143_0_1-20pgs__560409_dat.zip` and `1510_1699/000000874_0_1-22pgs__570785_dat.zip` with `query_args/hearts.txt`:
+
+```
+heart:
+- [1676, 4]
+hearts:
+- [1676, 1]
+```
+
+* Query over `1510_1699/` with `query_args/diseases.txt`:
+
+```bash
+wc results.yml
+```
+```
+ 67 189 791
+```
+
+* Query over all books with `query_args/diseases.txt`:
+
+```bash
+wc results.yml
+```
+```
+ 1226  3652 15784
+```
+
 ---
 
 ## Check number of executors used
