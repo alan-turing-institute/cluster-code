@@ -1,6 +1,7 @@
 """
-Counts the number of occurrences of words per-year. The query expects
-a file with a list of the words to search for, one per line.
+Counts the number of occurrences of words per-year and groups by
+year. The query expects a file with a list of the words to search for,
+one per line.
 
 The result is of form, for example:
 
@@ -20,7 +21,8 @@ import re
 
 def do_query(archives, words_file, logger=None):
     """
-    Counts the number of occurrences of words per-year.
+    Counts the number of occurrences of words per-year and groups by
+    year.
 
     @param archives: Archives holding Books
     @type archives: pyspark.rdd.PipelinedRDD with Archives.
@@ -66,7 +68,7 @@ def do_query(archives, words_file, logger=None):
         # [((YEAR, WORD), TOTAL), ...]
         # map
         # [((YEAR, (WORD, TOTAL)), ...]
-        # grou[ByKey
+        # groupByKey
         # [(YEAR, [(WORD, TOTAL), (WORD, TOTAL), ...], ...]
         # map
         # [(YEAR, [[WORD, TOTAL], [WORD, TOTAL], ...], ...]
