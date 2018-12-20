@@ -249,6 +249,66 @@ wc results.yml
  1226  3652 15784
 ```
 
+### Normalize
+
+Count total number of books, pages, words. This can be useful if wanting to see how the average number of books, pages and words change over time.
+
+Run:
+
+```
+fab standalone.prepare:query=queries/normalize.py,filenames=$PWD/files.txt standalone.submit:num_cores=144
+```
+
+* Query over `1510_1699/`:
+
+```bash
+wc results.yml
+```
+```
+ 67 189 791
+```
+```bash
+head results.yml
+```
+```
+cancer:
+- [1681, 1]
+- [1667, 1]
+- [1655, 1]
+- [1644, 1]
+- [1677, 1]
+- [1658, 1]
+- [1651, 2]
+- [1684, 3]
+- [1695, 5]
+...
+```
+
+* Query over all books:
+
+```bash
+wc results.yml
+```
+```
+ 1226  3652 15784
+```
+```bash
+head results.yml
+```
+```
+cancer:
+- [1681, 1]
+- [1761, 2]
+- [1849, 78]
+- [1791, 8]
+- [1744, 2]
+- [1824, 39]
+- [1834, 52]
+- [1838, 50]
+- [1749, 1]
+...
+```
+
 ---
 
 ## Check number of executors used
