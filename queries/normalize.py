@@ -1,6 +1,6 @@
 """
 Counts total number of books, pages, words. This can be useful if
-wanting to how how the average number of books, pages and words change
+wanting to see how the average number of books, pages and words change
 over time.
 
 The result is of form, for example:
