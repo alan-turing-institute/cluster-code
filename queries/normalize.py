@@ -11,7 +11,7 @@ The result is of form, for example:
 """
 
 
-def do_query(archives, _, _log):
+def do_query(archives, data_file=None, logger=None):
     """
     Counts total number of books, pages, words.
     """
@@ -23,8 +23,8 @@ def do_query(archives, _, _log):
         .reduceByKey(lambda x, y: tuple(i + j for i, j in zip(x, y))) \
         .map(lambda (year, data): (year, list(data))) \
         .collect()
-        # reduceByKey
-        # [(YEAR, (BOOKS, PAGES, WORDS)), ...]
-        # map
-        # [(YEAR, [BOOKS, PAGES, WORDS]), ...]
+    # reduceByKey
+    # [(YEAR, (BOOKS, PAGES, WORDS)), ...]
+    # map
+    # [(YEAR, [BOOKS, PAGES, WORDS]), ...]
     return result

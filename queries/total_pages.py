@@ -5,7 +5,7 @@ Counts the total number of pages across all books.
 from operator import add
 
 
-def do_query(archives, _, _log):
+def do_query(archives, data_file=None, logger=None):
     """
     Counts the total number of pages across all books.
     """

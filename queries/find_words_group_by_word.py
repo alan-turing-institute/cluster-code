@@ -62,12 +62,12 @@ def do_query(archives, words_file, logger=None):
         .groupByKey() \
         .map(lambda (year, data): (year, list(data))) \
         .collect()
-        # reduceByKey
-        # [((YEAR, WORD), TOTAL), ...]
-        # map
-        # [((WORD, (YEAR, TOTAL)), ...]
-        # groupByKey
-        # [(WORD, [(YEAR, TOTAL), (YEAR, TOTAL), ...], ...]
-        # map
-        # [(WORD, [[YEAR, TOTAL], [YEAR, TOTAL], ...], ...]
+    # reduceByKey
+    # [((YEAR, WORD), TOTAL), ...]
+    # map
+    # [((WORD, (YEAR, TOTAL)), ...]
+    # groupByKey
+    # [(WORD, [(YEAR, TOTAL), (YEAR, TOTAL), ...], ...]
+    # map
+    # [(WORD, [[YEAR, TOTAL], [YEAR, TOTAL], ...], ...]
     return result
