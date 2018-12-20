@@ -199,7 +199,7 @@ grep \<String ALTO/*xml|wc -l
 Run:
 
 ```
-fab standalone.prepare:query=queries/find_words_group_by_year.py,datafile=query_args/<WORDS>.txt,filenames=~/samples/oids.2books.txt standalone.submit:num_cores=144
+fab standalone.prepare:query=queries/find_words_group_by_year.py,datafile=query_args/<WORDS>.txt,filenames=$PWD/files.txt standalone.submit:num_cores=144
 ```
 
 where `<WORDS>.txt` is a file with a list of words to search for, one per line. Words in the books are converted to lower-case and non 'a-z' characters (e.g. commas, hyphens etc.) removed.
@@ -217,7 +217,7 @@ where `<WORDS>.txt` is a file with a list of words to search for, one per line. 
 Run:
 
 ```
-fab standalone.prepare:query=queries/find_words_group_by_word.py,datafile=query_args/<WORDS>.txt,filenames=~/samples/oids.2books.txt standalone.submit:num_cores=144
+fab standalone.prepare:query=queries/find_words_group_by_word.py,datafile=query_args/<WORDS>.txt,filenames=$PWD/files.txt standalone.submit:num_cores=144
 ```
 
 where `<WORDS>.txt` is a file with a list of words to search for, one per line. Words in the books are converted to lower-case and non 'a-z' characters (e.g. commas, hyphens etc.) removed.
@@ -233,20 +233,91 @@ hearts:
 
 * Query over `1510_1699/` with `query_args/diseases.txt`:
 
-```bash
-wc results.yml
 ```
-```
- 67 189 791
+cancer:
+- [1655, 1]
+- [1644, 1]
+- [1681, 1]
+- [1651, 2]
+- [1677, 1]
+- [1667, 1]
+- [1618, 1]
+- [1695, 5]
+- [1689, 2]
+- [1668, 1]
+- [1652, 2]
+- [1688, 3]
+- [1671, 2]
+- [1658, 1]
+- [1684, 3]
+cholera:
+- [1678, 1]
+consumption:
+- [1630, 2]
+- [1690, 1]
+...
 ```
 
 * Query over all books with `query_args/diseases.txt`:
 
-```bash
-wc results.yml
 ```
+cancer:
+- [1831, 26]
+- [1799, 8]
+- [1847, 77]
+- [1655, 1]
+- [1888, 99]
+- [1792, 6]
+- [1778, 2]
+- [1746, 2]
+- [1796, 2]
+...
 ```
- 1226  3652 15784
+
+### Words and context grouped by year
+
+Run:
+
+```
+fab standalone.prepare:query=queries/find_words_context_group_by_year.py,datafile=query_args/<WORDS>.txt,filenames=$PWD/files.txt standalone.submit:num_cores=144
+```
+
+where `<WORDS>.txt` is a file with a list of words to search for, one per line. Words in the books are converted to lower-case and non 'a-z' characters (e.g. commas, hyphens etc.) removed.
+
+* Query over `1510_1699/000001143_0_1-20pgs__560409_dat.zip` and `1510_1699/000000874_0_1-22pgs__570785_dat.zip` with `query_args/hearts.txt`:
+
+```
+1676:
+- {page: 000009,
+   place: 'London]',
+   publisher: null,
+   text: '...',
+   title: 'A Warning...',
+   word: heart}
+- ...
+```
+
+### Words and context grouped by word
+
+Run:
+
+```
+fab standalone.prepare:query=queries/find_words_context_group_by_word.py,datafile=query_args/<WORDS>.txt,filenames=$PWD/files.txt standalone.submit:num_cores=144
+```
+
+where `<WORDS>.txt` is a file with a list of words to search for, one per line. Words in the books are converted to lower-case and non 'a-z' characters (e.g. commas, hyphens etc.) removed.
+
+* Query over `1510_1699/000001143_0_1-20pgs__560409_dat.zip` and `1510_1699/000000874_0_1-22pgs__570785_dat.zip` with `query_args/hearts.txt`:
+
+```
+heart:
+- {page: 000009,
+   place: 'London]',
+   publisher: null,
+   text: '...',
+   title: 'A Warning...',
+   year: 1676}
+- ...
 ```
 
 ### Normalize
@@ -261,52 +332,41 @@ fab standalone.prepare:query=queries/normalize.py,filenames=$PWD/files.txt stand
 
 * Query over `1510_1699/`:
 
-```bash
-wc results.yml
 ```
-```
- 67 189 791
-```
-```bash
-head results.yml
-```
-```
-cancer:
-- [1681, 1]
-- [1667, 1]
-- [1655, 1]
-- [1644, 1]
-- [1677, 1]
-- [1658, 1]
-- [1651, 2]
-- [1684, 3]
-- [1695, 5]
+null: [14, 1660, 366436]
+1602: [1, 92, 14412]
+1605: [3, 363, 82402]
+1606: [3, 238, 54308]
+1607: [4, 340, 82654]
+1608: [1, 84, 20623]
+1610: [3, 204, 39701]
+1611: [2, 216, 53843]
+1612: [2, 208, 50929]
+...
+
+1696: [20, 1516, 405974]
+1697: [16, 1844, 725475]
+1698: [10, 710, 229209]
 ...
 ```
 
 * Query over all books:
 
-```bash
-wc results.yml
 ```
-```
- 1226  3652 15784
-```
-```bash
-head results.yml
-```
-```
-cancer:
-- [1681, 1]
-- [1761, 2]
-- [1849, 78]
-- [1791, 8]
-- [1744, 2]
-- [1824, 39]
-- [1834, 52]
-- [1838, 50]
-- [1749, 1]
+null: [14, 1660, 366436]
+1602: [1, 92, 14412]
+1605: [3, 363, 82402]
+1606: [3, 238, 54308]
+1607: [4, 340, 82654]
+1608: [1, 84, 20623]
+1610: [3, 204, 39701]
+1611: [2, 216, 53843]
+1612: [2, 208, 50929]
+1613: [1, 84, 20443]
 ...
+1896: [1573, 506589, 138755318]
+1897: [1638, 530816, 144777228]
+1898: [1268, 420066, 123156558]
 ```
 
 ---
