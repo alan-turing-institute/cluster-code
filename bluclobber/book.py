@@ -1,62 +1,72 @@
-from lxml import etree
-
-from page import Page
+"""
+Object model representation of XML book.
+"""
 
 from collections import defaultdict
-
 import logging
 import re
 
+from lxml import etree
+
+from bluclobber.page import Page
+
+
 class Book(object):
+    """
+    Object model representation of XML book.
+    """
+
     def __init__(self, code, archive):
-        self.namespaces= {
-            "mods":'http://www.loc.gov/mods/v3',
-            "mets":'http://www.loc.gov/METS/'
+        self.namespaces = {
+            "mods": 'http://www.loc.gov/mods/v3',
+            "mets": 'http://www.loc.gov/METS/'
         }
         self.archive = archive
-        self.logger=logging.getLogger('performance')
+        self.logger = logging.getLogger('performance')
         self.code = code
-        self.pages=None
+        self.pages = None
         self.logger.debug("Loading book metadata")
-        self.metadata=self.archive.metadata_file(self.code)
+        self.metadata = self.archive.metadata_file(self.code)
         self.logger.debug("Building book metadata")
         self.tree = etree.parse(self.metadata)
-        self.title=self.single_query('//mods:title/text()')
+        self.title = self.single_query('//mods:title/text()')
         self.logger.debug("Sorting pages")
-        self.page_codes = sorted(self.archive.book_codes[self.code], key=Book.sorter)
+        self.page_codes = \
+            sorted(self.archive.book_codes[self.code], key=Book.sorter)
         self.pages = len(self.page_codes)
         self.logger.debug("Sorted pages")
-        self.years=Book.parse_year(self.single_query('//mods:dateIssued/text()'))
-        self.publisher=self.single_query('//mods:publisher/text()')
-        self.place=self.single_query('//mods:placeTerm/text()')
+        self.years = \
+            Book.parse_year(self.single_query('//mods:dateIssued/text()'))
+        self.publisher = self.single_query('//mods:publisher/text()')
+        self.place = self.single_query('//mods:placeTerm/text()')
         # places often have a year in:
-        self.years+=Book.parse_year(self.place)
-        self.years=sorted(self.years)
+        self.years += Book.parse_year(self.place)
+        self.years = sorted(self.years)
         if self.years:
-            self.year=self.years[0]
+            self.year = self.years[0]
         else:
-            self.year=None
+            self.year = None
 
     @staticmethod
     def parse_year(text):
         try:
-            long=re.compile("(1[6-9]\d\d)")
-            short=re.compile("\d\d")
-            results=[]
-            chunks=iter(long.split(text)[1:])
-            for year, rest in zip(chunks,chunks):
+            long_pattern = re.compile("(1[6-9]\d\d)")
+            short_pattern = re.compile("\d\d")
+            results = []
+            chunks = iter(long_pattern.split(text)[1:])
+            for year, rest in zip(chunks, chunks):
                 results.append(int(year))
-                century=year[0:2]
-                years=short.findall(rest)
-                for year in years:
-                    results.append(int(century+year))
+                century = year[0:2]
+                years = short_pattern.findall(rest)
+                for yearxxx in years:
+                    results.append(int(century+yearxxx))
             return sorted(set(results))
         except TypeError:
             return []
 
     @staticmethod
     def sorter(page_code):
-        codes=map(int,page_code.split('_'))
+        codes = list(map(int, page_code.split('_')))
 
     def query(self, query):
         return self.tree.xpath(query, namespaces=self.namespaces)
@@ -67,11 +77,11 @@ class Book(object):
     def zip_info(self):
         return self.archive.zip_info_for_book(self.code)
 
-    def page_zip_info(self,page_code):
+    def page_zip_info(self, page_code):
         return self.archive.zip_info_for_page(self.code, page_code)
 
     def single_query(self, query):
-        result=self.query(query)
+        result = self.query(query)
         if not result:
             return None
         try:
@@ -87,15 +97,15 @@ class Book(object):
             yield self.page(page_code)
 
     def strings(self):
-        for page, string in self.scan_strings():
+        for _, string in self.scan_strings():
             yield string
 
     def words(self):
-        for page, word in self.scan_words():
+        for _, word in self.scan_words():
             yield word
 
     def images(self):
-        for page, image in self.scan_images():
+        for _, image in self.scan_images():
             yield image
 
     def scan_strings(self):
@@ -114,15 +124,15 @@ class Book(object):
                 yield page, image
 
     def describe_relevant(self, scanner, checker):
-        finds=defaultdict(list)
-        content=dict()
+        finds = defaultdict(list)
         for target in scanner:
-            find=checker(*target)
+            find = checker(*target)
             if find:
                 page, finding = find
                 finds[page].append(finding)
         if finds:
-            return {self.year: [[self.title, self.year, self.place, self.publisher,
-                                 [[page.code, page.content, finds] for page,finds in finds.iteritems()]]]}
-        else:
-            return None
+            return {self.year:
+                    [[self.title, self.year, self.place, self.publisher,
+                      [[page.code, page.content, finds]
+                       for page, finds in list(finds.items())]]]}
+        return None

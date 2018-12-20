@@ -1,16 +1,27 @@
+"""
+bluclobber.archive.Archive tests.
+"""
+
 from unittest import TestCase
-from lxml import etree
 
-from .fixtures import path
-from ..archive import Archive
+from bluclobber.test.fixtures import open_file
+from bluclobber.archive import Archive
 
-class test_archive(TestCase):
+
+class TestArchive(TestCase):
+    """
+    bluclobber.archive.Archive tests.
+    """
+
     def setUp(self):
-        source=open(path('zips','book37.zip'))
-        self.arc=Archive(source)
+        source = open_file('zips', 'book37.zip')
+        self.archive = Archive(source)
+
     def test_books(self):
-        assert(self.arc.book_codes.keys()==['000000218', '000000037'])
-        assert('000001' in self.arc.book_codes['000000037'])
-        assert('03_000002' in self.arc.book_codes['000000218'])
+        self.assertEqual(['000000218', '000000037'],
+                         list(self.archive.book_codes.keys()))
+        self.assertTrue('000001' in self.archive.book_codes['000000037'])
+        self.assertTrue('03_000002' in self.archive.book_codes['000000218'])
+
     def test_pages(self):
-        assert(len(self.arc.book_codes['000000037'])==42)
+        self.assertEqual(42, len(self.archive.book_codes['000000037']))

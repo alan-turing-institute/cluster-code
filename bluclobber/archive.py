@@ -1,33 +1,38 @@
-import zipfile
-import re
-
-from book import Book
+"""
+Object model representation of ZIP archive of books.
+"""
 
 from cStringIO import StringIO
-
 import logging
+import re
+import zipfile
+
+from bluclobber.book import Book
+
 
 class Archive(object):
-    def __init__(self, stream):
-        self.logger=logging.getLogger('performance')
-        self.logger.info("Opening archive ")
+    """
+    Object model representation of ZIP archive of books.
+    """
 
+    def __init__(self, stream):
+        self.logger = logging.getLogger('performance')
+        self.logger.info("Opening archive")
+        mmap = StringIO(stream.read())
         self.logger.debug("Opened archive")
-        mmap=StringIO(stream.read())
-        self.logger.info("Slurped archive")
         self.zip = zipfile.ZipFile(mmap)
+        self.logger.info("Slurped archive")
         self.logger.debug("Examining books in archive")
         self.filenames = [entry.filename for entry in self.zip.infolist()]
+        self.logger.debug("Enumerating books")
         book_pattern = re.compile('([0-9]*)_metadata\.xml')
         page_pattern = re.compile('ALTO\/([0-9]*?)_([0-9_]*)\.xml')
-        self.logger.debug("Enumerating books")
-        bookmatches=filter(None, [ book_pattern.match(name) for name in self.filenames ])
-        pagematches=filter(None, [ page_pattern.match(name) for name in self.filenames ])
-        self.book_codes={ match.group(1) : [] for match in bookmatches }
-        for match in pagematches:
-            self.book_codes[ match.group(1) ].append(match.group(2))
+        book_matches = filter(None, [book_pattern.match(name) for name in self.filenames])
+        page_matches = filter(None, [page_pattern.match(name) for name in self.filenames])
+        self.book_codes = {match.group(1): [] for match in book_matches}
+        for match in page_matches:
+            self.book_codes[match.group(1)].append(match.group(2))
         self.logger.info("Enumerated books")
-
 
     def zip_info_for_book(self, book_code):
         return self.zip.getinfo(book_code + '_metadata.xml')
@@ -43,7 +48,7 @@ class Archive(object):
 
     def __getitem__(self, index):
         self.logger.debug("Creating book")
-        return Book(self.book_codes.keys()[index],self)
+        return Book(self.book_codes.keys()[index], self)
 
     def __iter__(self):
         for book in self.book_codes:

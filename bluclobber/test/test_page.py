@@ -1,12 +1,21 @@
+"""
+bluclobber.page.Page tests.
+"""
+
 from unittest import TestCase
-from lxml import etree
 
-from ..page import Page
-from .fixtures import path
+from bluclobber.page import Page
+from bluclobber.test.fixtures import get_path
 
-class test_page(TestCase):
+
+class TestPage(TestCase):
+    """
+    bluclobber.page.Page tests.
+    """
+
     def setUp(self):
-        source=path('page.xml')
-        self.page=Page(None, None, source)
+        source = get_path('page.xml')
+        self.page = Page(None, None, source)
+
     def test_content(self):
-        assert("LOVE THE AVENGER" in self.page.content)
+        self.assertTrue("LOVE THE AVENGER" in self.page.content)
