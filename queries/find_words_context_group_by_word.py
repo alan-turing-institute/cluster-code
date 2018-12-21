@@ -56,13 +56,13 @@ def do_query(archives, words_file, logger=None):
 
     words_and_context = filtered_words.map(
         lambda book_page_word:
-        (book_page_word[0], 
-         {"title": book_page_word[1].title,
-          "place": book_page_word[1].place,
-          "publisher": book_page_word[1].publisher,
-          "page": book_page_word[2].code,
-          "text": book_page_word[2].content,
-          "year": book_page_word[1].year}))
+        (book_page_word[2],
+         {"title": book_page_word[0].title,
+          "place": book_page_word[0].place,
+          "publisher": book_page_word[0].publisher,
+          "page": book_page_word[1].code,
+          "text": book_page_word[1].content,
+          "year": book_page_word[0].year}))
 
     result = words_and_context \
         .groupByKey() \
