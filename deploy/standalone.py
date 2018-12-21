@@ -43,7 +43,6 @@ def submit(num_cores=1):
     Submit the query to Spark.
     """
     with lcd(DEPLOY_DIR):  # pylint: disable=not-context-manager
-        local('zip -r ./bluclobber.zip bluclobber')
         local("nohup spark-submit --py-files bluclobber.zip bluclobber/standalone_runner.py " + str(num_cores) + " > log.txt &")
 
 

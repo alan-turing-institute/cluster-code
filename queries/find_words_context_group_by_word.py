@@ -44,49 +44,29 @@ def do_query(archives, words_file, logger=None):
 
     books = archives.flatMap(
         lambda archive: [book for book in list(archive)])
-    # [BOOK, ...]
 
     words = books.flatMap(
         lambda book: [
             (book, page, utils.normalize(word))
             for (page, word) in book.scan_words()
         ])
-    # [(BOOK, PAGE, WORD), ...]
 
     filtered_words = words.filter(
-        lambda (book, page, word): word in search_words)
-    # [(BOOK, PAGE, WORD), ...]
+        lambda book_page_word: book_page_word[2] in search_words)
 
     words_and_context = filtered_words.map(
-        lambda (book, page, word):
-        (word, {"title": book.title,
-                "place": book.place,
-                "publisher": book.publisher,
-                "page": page.code,
-                "text": page.content,
-                "year": book.year}))
-    # [(WORD, { "title": TITLE,
-    #           "place": PLACE,
-    #           "publisher": PUBLISHER,
-    #           "page": PAGE,
-    #           "text": TEXT,
-    #           "year": YEAR }), ...]
+        lambda book_page_word:
+        (book_page_word[0], 
+         {"title": book_page_word[1].title,
+          "place": book_page_word[1].place,
+          "publisher": book_page_word[1].publisher,
+          "page": book_page_word[2].code,
+          "text": book_page_word[2].content,
+          "year": book_page_word[1].year}))
+
     result = words_and_context \
         .groupByKey() \
-        .map(lambda (word, data): (word, list(data))) \
+        .map(lambda word_context:
+             (word_context[0], list(word_context[1]))) \
         .collect()
-    # groupByKey
-    # [(WORD, [ { "title": TITLE,
-    #             "place": PLACE,
-    #             "publisher": PUBLISHER,,
-    #             "page": PAGE,
-    #             "text": TEXT,
-    #             "year": YEAR }, ...], ...]
-    # map
-    # [(WORD, [ { "title": TITLE,
-    #             "place": PLACE,
-    #             "publisher": PUBLISHER,,
-    #             "page": PAGE,
-    #             "text": TEXT,
-    #             "year": YEAR }, ...], ...]
     return result

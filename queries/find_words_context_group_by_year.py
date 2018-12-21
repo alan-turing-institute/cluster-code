@@ -44,49 +44,29 @@ def do_query(archives, words_file, logger=None):
 
     books = archives.flatMap(
         lambda archive: [(book.year, book) for book in list(archive)])
-    # [(YEAR, BOOK), ...]
 
     words = books.flatMap(
-        lambda (year, book): [
-            (year, book, page, utils.normalize(word))
-            for (page, word) in book.scan_words()
+        lambda year_book: [
+            (year_book[0], year_book[1], page, utils.normalize(word))
+            for (page, word) in year_book[1].scan_words()
         ])
-    # [(YEAR, BOOK, PAGE, WORD), ...]
 
     filtered_words = words.filter(
-        lambda (year, book, page, word): word in search_words)
-    # [(YEAR, BOOK, PAGE, WORD), ...]
+        lambda year_book_page_word: year_book_page_word[3] in search_words)
 
     words_and_context = filtered_words.map(
-        lambda (year, book, page, word):
-        (year, {"title": book.title,
-                "place": book.place,
-                "publisher": book.publisher,
-                "page": page.code,
-                "text": page.content,
-                "word": word}))
-    # [(YEAR, { "title": TITLE,
-    #           "place": PLACE,
-    #           "publisher": PUBLISHER,
-    #           "page": PAGE,
-    #           "text": TEXT,
-    #           "word": WORD }), ...]
+        lambda year_book_page_word:
+        (year_book_page_word[0],
+         {"title": year_book_page_word[1].title,
+          "place": year_book_page_word[1].place,
+          "publisher": year_book_page_word[1].publisher,
+          "page": year_book_page_word[2].code,
+          "text": year_book_page_word[2].content,
+          "word": year_book_page_word[3]}))
+
     result = words_and_context \
         .groupByKey() \
-        .map(lambda (year, data): (year, list(data))) \
+        .map(lambda year_context:
+             (year_context[0], list(year_context[1]))) \
         .collect()
-    # groupByKey
-    # [(YEAR, [ { "title": TITLE,
-    #             "place": PLACE,
-    #             "publisher": PUBLISHER,,
-    #             "page": PAGE,
-    #             "text": TEXT,
-    #             "word": WORD }, ...], ...]
-    # map
-    # [(YEAR, [ { "title": TITLE,
-    #             "place": PLACE,
-    #             "publisher": PUBLISHER,,
-    #             "page": PAGE,
-    #             "text": TEXT,
-    #             "word": WORD }, ...], ...]
     return result

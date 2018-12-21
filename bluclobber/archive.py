@@ -27,8 +27,10 @@ class Archive(object):
         self.logger.debug("Enumerating books")
         book_pattern = re.compile('([0-9]*)_metadata\.xml')
         page_pattern = re.compile('ALTO\/([0-9]*?)_([0-9_]*)\.xml')
-        book_matches = filter(None, [book_pattern.match(name) for name in self.filenames])
-        page_matches = filter(None, [page_pattern.match(name) for name in self.filenames])
+        book_matches = [
+            _f for _f in [book_pattern.match(name) for name in self.filenames] if _f]
+        page_matches = [
+            _f for _f in [page_pattern.match(name) for name in self.filenames] if _f]
         self.book_codes = {match.group(1): [] for match in book_matches}
         for match in page_matches:
             self.book_codes[match.group(1)].append(match.group(2))
@@ -48,7 +50,7 @@ class Archive(object):
 
     def __getitem__(self, index):
         self.logger.debug("Creating book")
-        return Book(self.book_codes.keys()[index], self)
+        return Book(list(self.book_codes.keys())[index], self)
 
     def __iter__(self):
         for book in self.book_codes:

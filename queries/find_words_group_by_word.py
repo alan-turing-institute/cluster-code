@@ -43,31 +43,23 @@ def do_query(archives, words_file, logger=None):
 
     books = archives.flatMap(
         lambda archive: [(book.year, book) for book in list(archive)])
-    # [(YEAR, BOOK), ...]
 
     words = books.flatMap(
         lambda year_book: [
             ((year_book[0], utils.normalize(word)), 1)
             for (_, word) in year_book[1].scan_words()
         ])
-    # [((YEAR, WORD), 1), ...]
 
     num_matches = words.filter(
-        lambda year_word_count: year_word_count[0][1] in search_words)
-    # [((YEAR, WORD), 1), ...]
+        lambda yearword_count: yearword_count[0][1] in search_words)
 
     result = num_matches \
         .reduceByKey(add) \
-        .map(lambda year_word_count: (year_word_count[0][1], (year_word_count[0][0], year_word_count[1]))) \
+        .map(lambda yearword_count:
+             (yearword_count[0][1],
+              (yearword_count[0][0], yearword_count[1]))) \
         .groupByKey() \
-        .map(lambda year_data: (year_data[0], list(year_data[1]))) \
+        .map(lambda word_yearcount:
+             (word_yearcount[0], list(word_yearcount[1]))) \
         .collect()
-    # reduceByKey
-    # [((YEAR, WORD), TOTAL), ...]
-    # map
-    # [((WORD, (YEAR, TOTAL)), ...]
-    # groupByKey
-    # [(WORD, [(YEAR, TOTAL), (YEAR, TOTAL), ...], ...]
-    # map
-    # [(WORD, [[YEAR, TOTAL], [YEAR, TOTAL], ...], ...]
     return result

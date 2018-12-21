@@ -16,15 +16,13 @@ def do_query(archives, data_file=None, logger=None):
     Counts total number of books, pages, words.
     """
     books = archives.flatMap(lambda archive: list(archive))
-    counts = books.map(lambda book: (book.year, (1, book.pages, len(list(book.words())))))
-    # [(YEAR, (1, PAGES, WORDS)), ...]
+
+    counts = books.map(lambda book:
+                       (book.year, (1, book.pages, len(list(book.words())))))
 
     result = counts \
-        .reduceByKey(lambda x, y: tuple(i + j for i, j in zip(x, y))) \
+        .reduceByKey(lambda x, y:
+                     tuple(i + j for i, j in zip(x, y))) \
         .map(lambda year_data: (year_data[0], list(year_data[1]))) \
         .collect()
-    # reduceByKey
-    # [(YEAR, (BOOKS, PAGES, WORDS)), ...]
-    # map
-    # [(YEAR, [BOOKS, PAGES, WORDS]), ...]
     return result
