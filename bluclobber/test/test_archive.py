@@ -14,7 +14,7 @@ class TestArchive(TestCase):
     """
 
     def setUp(self):
-        source = open_file('zips', 'book37.zip')
+        source = open_file('zips', 'book37m.zip')
         self.archive = Archive(source)
 
     def test_books(self):
