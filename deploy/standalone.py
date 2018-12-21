@@ -1,12 +1,12 @@
 """
-Set up and run standalone.
+Fabric-compliant tasks to set up and run a Spark text-analysis
+job using "spark-submit".
 """
 
-import os
-import pandas as pd
-from fabric.api import task, env, execute, lcd, local
+from fabric.api import task, lcd, local
 
 DEPLOY_DIR = "standalone"
+
 
 @task
 def setup():
@@ -32,7 +32,7 @@ def prepare(filenames="../files.txt", query="", datafile=""):
     with lcd(DEPLOY_DIR):  # pylint: disable=not-context-manager
         local('cp ' + filenames + ' files.txt')
         local('cp ../' + query + ' ./bluclobber/query.py')
-        if (datafile != ""):
+        if datafile != "":
             local('cp ../' + datafile + ' input.data')
         local('zip -r ./bluclobber.zip bluclobber')
 

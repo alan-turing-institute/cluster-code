@@ -46,21 +46,21 @@ def do_query(archives, words_file, logger=None):
     # [(YEAR, BOOK), ...]
 
     words = books.flatMap(
-        lambda (year, book): [
-            ((year, utils.normalize(word)), 1)
-            for (_, word) in book.scan_words()
+        lambda year_book: [
+            ((year_book[0], utils.normalize(word)), 1)
+            for (_, word) in year_book[1].scan_words()
         ])
     # [((YEAR, WORD), 1), ...]
 
     num_matches = words.filter(
-        lambda ((year, word), _): word in search_words)
+        lambda year_word_count: year_word_count[0][1] in search_words)
     # [((YEAR, WORD), 1), ...]
 
     result = num_matches \
         .reduceByKey(add) \
-        .map(lambda ((year, word), count): (word, (year, count))) \
+        .map(lambda year_word_count: (year_word_count[0][1], (year_word_count[0][0], year_word_count[1]))) \
         .groupByKey() \
-        .map(lambda (year, data): (year, list(data))) \
+        .map(lambda year_data: (year_data[0], list(year_data[1]))) \
         .collect()
     # reduceByKey
     # [((YEAR, WORD), TOTAL), ...]

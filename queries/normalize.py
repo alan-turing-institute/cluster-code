@@ -21,7 +21,7 @@ def do_query(archives, data_file=None, logger=None):
 
     result = counts \
         .reduceByKey(lambda x, y: tuple(i + j for i, j in zip(x, y))) \
-        .map(lambda (year, data): (year, list(data))) \
+        .map(lambda year_data: (year_data[0], list(year_data[1]))) \
         .collect()
     # reduceByKey
     # [(YEAR, (BOOKS, PAGES, WORDS)), ...]
