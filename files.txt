@@ -1,2 +1,1 @@
-https://github.com/alan-turing-institute/cluster-code/raw/sparkrods/bluclobber/test/fixtures/zips/book37.zip
-https://github.com/alan-turing-institute/cluster-code/raw/sparkrods/bluclobber/test/fixtures/corpus24/000206133_0_1-1178pgs__1023547_dat.zip
+https://github.com/alan-turing-institute/cluster-code/raw/epcc-sparkrods/bluclobber/test/fixtures/000000037_0_1-42pgs__944211_dat_modified.zip
