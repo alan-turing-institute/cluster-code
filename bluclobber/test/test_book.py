@@ -15,7 +15,7 @@ class TestBook(TestCase):
     """
 
     def setUp(self):
-        source = open_file('zips', 'book37m.zip')
+        source = open_file('000000037_0_1-42pgs__944211_dat_modified.zip')
         self.archive = Archive(source)
         self.book = self.archive[0]
 
